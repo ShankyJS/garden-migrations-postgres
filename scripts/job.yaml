@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrations
+  namespace: garden-migrations-default
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-migrations
+        image: postgres:11.7
+        command: ["/bin/bash", "-c"]
+        args:
+        - "PGPASSWORD=postgres psql -U postgres -w --host=db --port=5432 -d postgres -c 'CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL, created_at timestamp default NULL)'"
+      restartPolicy: Never
+  backoffLimit: 4
