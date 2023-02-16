@@ -2,7 +2,7 @@
 kind: Project
 
 # The name of the project.
-name: garden-migrations
+name: dbconfig-tasks
 
 # A list of environments to configure for the project.
 environments:

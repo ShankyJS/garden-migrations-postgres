@@ -33,7 +33,7 @@ services:
       PGPASSWORD: ${var.postgres-password}
     volumes:
       - name: data
-        hostPath: ./scripts
+        hostPath: ../scripts
         containerPath: /db-data
     dependencies:
     - db
