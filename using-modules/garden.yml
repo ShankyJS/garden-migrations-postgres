@@ -17,10 +17,16 @@ services:
       POSTGRES_PASSWORD: ${var.postgres-password}
     healthCheck:
       command: [psql, -w, -U, "${var.postgres-username}", -d, "${var.postgres-database}", -c, "SELECT 1"]
-tasks:
+---
+kind: Module # This module is basically being used as a job
+description: A module to run stuff inside the Database container
+type: container
+name: db-migrations
+image: postgres:11.7
+services:
   - name: db-migrations
     command: [/bin/sh, -c]
-    args: ["/db-scripts/init-db.sh"]
+    args: ["/db-data/init-db.sh"]
     env:
       PGDATABASE: ${var.postgres-database}
       PGUSER: ${var.postgres-username}
@@ -28,27 +34,8 @@ tasks:
     volumes:
       - name: data
         hostPath: ../scripts
-        containerPath: /db-scripts
-    dependencies: [db]
-# ---
-# kind: Module # This module is basically being used as a job
-# description: A module to run stuff inside the Database container
-# type: container
-# name: db-migrations
-# image: postgres:11.7
-# services:
-#   - name: db-migrations
-#     command: [/bin/sh, -c]
-#     args: ["/db-data/init-db.sh"]
-#     env:
-#       PGDATABASE: ${var.postgres-database}
-#       PGUSER: ${var.postgres-username}
-#       PGPASSWORD: ${var.postgres-password}
-#     volumes:
-#       - name: data
-#         hostPath: ./scripts
-#         containerPath: /db-data
-#     dependencies:
-#     - db
+        containerPath: /db-data
+    dependencies:
+    - db
 
 
